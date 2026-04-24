@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -38,7 +41,7 @@ public class PositionsController : ControllerBase
 
                 // Query that selects all positions
                 SqlCommand cmd = new SqlCommand(
-                    "SELECT Pos_name, pos_lat, pos_lon FROM positions ORDER BY pos_name ASC",
+                    "SELECT pos_name, pos_lat, pos_lon FROM positions ORDER BY pos_name ASC",
                     con
                 );
 
@@ -103,7 +106,7 @@ public class PositionsController : ControllerBase
                 con.Open();
 
                 // First check if the name already exists
-                string query = "SELECT COUNT(*) FROM positions WHERE Pos_name = @Name";
+                string query = "SELECT COUNT(*) FROM positions WHERE pos_name = @Name";
                 SqlCommand cmd = new SqlCommand(query, con);
                 cmd.Parameters.AddWithValue("@Name", b.Name);
 
@@ -116,7 +119,7 @@ public class PositionsController : ControllerBase
                 }
 
                 // Insert the new position
-                string query1 = "INSERT INTO positions (Pos_name, pos_lat, pos_lon) VALUES (@Name, @Lat, @Lon)";
+                string query1 = "INSERT INTO positions (pos_name, pos_lat, pos_lon) VALUES (@Name, @Lat, @Lon)";
                 SqlCommand cmd1 = new SqlCommand(query1, con);
                 cmd1.Parameters.AddWithValue("@Name", b.Name);
                 cmd1.Parameters.AddWithValue("@Lat", b.Lat);
@@ -160,7 +163,7 @@ public class PositionsController : ControllerBase
                 con.Open();
 
                 // First we get the coordinates of the requested position
-                string query = "SELECT Pos_name, pos_lat, pos_lon FROM positions WHERE Pos_name = @Name";
+                string query = "SELECT pos_name, pos_lat, pos_lon FROM positions WHERE pos_name = @Name";
                 SqlCommand cmd1 = new SqlCommand(query, con);
                 cmd1.Parameters.AddWithValue("@Name", name);
 
@@ -181,7 +184,7 @@ public class PositionsController : ControllerBase
 
                 // Now get all positions
                 SqlCommand cmd = new SqlCommand(
-                    "SELECT Pos_name, pos_lat, pos_lon FROM positions ORDER BY pos_name ASC",
+                    "SELECT pos_name, pos_lat, pos_lon FROM positions ORDER BY pos_name ASC",
                     con
                 );
 

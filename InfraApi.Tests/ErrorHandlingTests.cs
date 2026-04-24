@@ -6,15 +6,15 @@ using Microsoft.Extensions.Logging;
 
 public class ErrorHandlingTests
 {
-    private PositionsController CreateController()
+    private PositionsController CreateBrokenController()
     {
-        var inMemorySettings = new Dictionary<string, string?>
+        var settings = new Dictionary<string, string?>
         {
-            { "ConnectionStrings:DefaultConnection", "Server=localhost\\SQLEXPRESS;Database=InfralabsDB;Trusted_Connection=True;TrustServerCertificate=True;" }
+            { "ConnectionStrings:DefaultConnection", "Server=INVALIDSERVER;Database=FakeDB;" }
         };
 
         IConfiguration configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(inMemorySettings)
+            .AddInMemoryCollection(settings)
             .Build();
 
         ILogger<PositionsController> logger = new LoggerFactory()
@@ -27,7 +27,7 @@ public class ErrorHandlingTests
     public void GetPositions_DatabaseFailure_Returns500()
     {
         // Arrange
-        var controller = CreateController();
+        var controller = CreateBrokenController();
 
         // Act
         IActionResult result = controller.GetPositions();
@@ -42,7 +42,7 @@ public class ErrorHandlingTests
     public void PostPositions_DatabaseFailure_Returns500()
     {
         // Arrange
-        var controller = CreateController();
+        var controller = CreateBrokenController();
 
         var position = new Position
         {
@@ -64,7 +64,7 @@ public class ErrorHandlingTests
     public void Getposdistance_DatabaseFailure_Returns500()
     {
         // Arrange
-        var controller = CreateController();
+        var controller = CreateBrokenController();
 
         // Act
         var result = controller.Getposdistance("Athens");
