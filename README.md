@@ -2,7 +2,7 @@
 
 A simple **ASP.NET Core Web API** for storing geographic positions in **SQL Server** and calculating the distance between one position and all the others using the **Haversine formula**.
 
-This project was created as a solution for the Infralabs position-tracking challenge. The task requires a Web API with raw SQL access, input validation, error handling, logging, and unit tests. The uploaded task specification defines three required endpoints, SQL Server storage, validation rules, logging, and tests fileciteturn0file1. The current implementation includes a `PositionsController`, a `Position`/`Distance` model, a `DistanceCalculator` helper, and unit tests for validation, distance calculation, and error handling fileciteturn0file0 fileciteturn0file5 fileciteturn0file6 fileciteturn0file4 fileciteturn0file3 fileciteturn0file2.
+This project was developed as a solution for the Infralabs position-tracking challenge. The task required the implementation of a RESTful Web API that interacts with a SQL Server database using raw SQL, while also demonstrating proper input validation, error handling, logging, and unit testing.
 
 ---
 
