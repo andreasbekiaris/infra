@@ -1,10 +1,7 @@
 using System ;
-namespace InfraApi; 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-
-
 using System;
 using Xunit;
 
