@@ -1,4 +1,5 @@
 using System;
+using System.Data;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -40,10 +41,9 @@ public class PositionsController : ControllerBase
                 await con.OpenAsync();
 
                 // Query that selects all positions
-                SqlCommand cmd = new SqlCommand(
-                    "SELECT pos_name, pos_lat, pos_lon FROM positions ORDER BY pos_name ASC", con );
+               using  SqlCommand cmd = new SqlCommand("SELECT pos_name, pos_lat, pos_lon FROM positions ORDER BY pos_name ASC", con );
 
-                SqlDataReader reader = await cmd.ExecuteReaderAsync();
+        using  SqlDataReader reader = await cmd.ExecuteReaderAsync();
 
                 // Read each row from the database
                 while (await reader.ReadAsync())
@@ -51,9 +51,9 @@ public class PositionsController : ControllerBase
                     // Create a Position object from the row
                     Position p = new Position
                     {
-                        Name = reader.GetString(0),
-                        Lat = reader.GetDouble(1),
-                        Lon = reader.GetDouble(2)
+                        Name =reader.GetString(reader.GetOrdinal("pos_name")),
+                        Lat = reader.GetDouble(reader.GetOrdinal("pos_lat")),
+                        Lon = reader.GetDouble(reader.GetOrdinal("pos_lon"))
                     };
 
                     positions.Add(p);
@@ -106,10 +106,10 @@ public class PositionsController : ControllerBase
                 // First check if the name already exists
              string query = @"INSERT INTO positions (pos_name, pos_lat, pos_lon) SELECT @Name, @Lat, @Lon WHERE NOT EXISTS (SELECT 1 FROM positions WHERE pos_name = @Name)";
 
-             SqlCommand cmd = new SqlCommand(query, con);                            
-              cmd.Parameters.AddWithValue("@Name", b.Name);
-                cmd.Parameters.AddWithValue("@Lat", b.Lat);
-                cmd.Parameters.AddWithValue("@Lon", b.Lon);
+        using SqlCommand cmd = new SqlCommand(query, con);                            
+             cmd.Parameters.Add("@Name", SqlDbType.NVarChar).Value = b.Name;
+cmd.Parameters.Add("@Lat", SqlDbType.Float).Value = b.Lat;
+cmd.Parameters.Add("@Lon", SqlDbType.Float).Value = b.Lon;
 
               int rowsAffected = await cmd.ExecuteNonQueryAsync();
 
@@ -125,11 +125,7 @@ public class PositionsController : ControllerBase
 
             return Ok();
         }
-          catch (SqlException ex) when (ex.Number == 2627) // unique constraint
-    {
-        _logger.LogWarning("Duplicate position name attempted: {Name}", b.Name);
-        return Conflict("Position name already exists.");
-    }
+    
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error while inserting position.");
@@ -156,7 +152,7 @@ public async Task<ActionResult<List<Distance>>> Getposdistance(string name)
 
             // 1️⃣ Check if the name exists
             string existsQuery = "SELECT COUNT(1) FROM positions WHERE pos_name = @Name";
-            SqlCommand existsCmd = new SqlCommand(existsQuery, con);
+          using  SqlCommand existsCmd = new SqlCommand(existsQuery, con);
             existsCmd.Parameters.AddWithValue("@Name", name);
 
             int count = (int)(await existsCmd.ExecuteScalarAsync() ?? 0);
@@ -178,7 +174,7 @@ string query = @"
       AND other.pos_name != @Name
     ORDER BY other.pos_name ASC";
 
-            SqlCommand cmd = new SqlCommand(query, con);
+        using    SqlCommand cmd = new SqlCommand(query, con);
             cmd.Parameters.AddWithValue("@Name", name);
 
             // 3️⃣ One reader with column names
