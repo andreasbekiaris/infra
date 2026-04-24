@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+
 // Create the builder that sets up the web application
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,16 +15,23 @@ builder.Services.AddEndpointsApiExplorer();
 // Adds Swagger so we can test the API from the browser
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddOptions<ConnectionStringOptions>()
+    .BindConfiguration("ConnectionStrings")
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
 // Build the application
 var app = builder.Build();
 
 // Enable Swagger middleware
 // This generates the API documentation
-app.UseSwagger();
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
-// Enable the Swagger UI (the webpage where we test endpoints)
-app.UseSwaggerUI();
 
+app.UseHttpsRedirection();
 // Map controller routes (like /api/positions)
 app.MapControllers();
 

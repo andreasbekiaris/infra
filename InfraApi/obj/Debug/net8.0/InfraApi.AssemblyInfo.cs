@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("InfraApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+41e8b06e9f3cbc4fe054d92fe019a82b48cd443d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3d003ab50e1e52a9705084d818a4830e57159105")]
 [assembly: System.Reflection.AssemblyProductAttribute("InfraApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("InfraApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
