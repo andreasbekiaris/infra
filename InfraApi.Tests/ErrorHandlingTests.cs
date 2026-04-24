@@ -1,17 +1,33 @@
-using System;
+using System.Collections.Generic;
 using Xunit;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 public class ErrorHandlingTests
 {
+    private PositionsController CreateController()
+    {
+        var inMemorySettings = new Dictionary<string, string?>
+        {
+            { "ConnectionStrings:DefaultConnection", "Server=localhost\\SQLEXPRESS;Database=InfralabsDB;Trusted_Connection=True;TrustServerCertificate=True;" }
+        };
+
+        IConfiguration configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(inMemorySettings)
+            .Build();
+
+        ILogger<PositionsController> logger = new LoggerFactory()
+            .CreateLogger<PositionsController>();
+
+        return new PositionsController(configuration, logger);
+    }
+
     [Fact]
     public void GetPositions_DatabaseFailure_Returns500()
     {
         // Arrange
-        // Χαλάμε επίτηδες το connection environment
-        Environment.SetEnvironmentVariable("DOTNET_SYSTEM_NET_HTTP_USESOCKETSHTTPHANDLER", "0");
-
-        var controller = new PositionsController();
+        var controller = CreateController();
 
         // Act
         IActionResult result = controller.GetPositions();
@@ -22,46 +38,40 @@ public class ErrorHandlingTests
         Assert.Equal("Internal server error", objectResult.Value);
     }
 
-
-[Fact]
-public void PostPositions_DatabaseFailure_Returns500()
-{
-    // Arrange
-    var controller = new PositionsController();
-
-    var position = new Position
+    [Fact]
+    public void PostPositions_DatabaseFailure_Returns500()
     {
-        Name = "Athens",
-        Lat = 37.98,
-        Lon = 23.72
-    };
+        // Arrange
+        var controller = CreateController();
 
-    // Προκαλούμε SQL failure κλείνοντας το SQL service ή χαλώντας connection env
-    Environment.SetEnvironmentVariable("DOTNET_SYSTEM_NET_HTTP_USESOCKETSHTTPHANDLER", "0");
+        var position = new Position
+        {
+            Name = "Athens",
+            Lat = 37.98,
+            Lon = 23.72
+        };
 
-    // Act
-    IActionResult result = controller.PostPositions(position);
+        // Act
+        IActionResult result = controller.PostPositions(position);
 
-    // Assert
-    var objectResult = Assert.IsType<ObjectResult>(result);
-    Assert.Equal(500, objectResult.StatusCode);
-    Assert.Equal("Internal server error", objectResult.Value);
-}
+        // Assert
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(500, objectResult.StatusCode);
+        Assert.Equal("Internal server error", objectResult.Value);
+    }
 
-[Fact]
-public void Getposdistance_DatabaseFailure_Returns500()
-{
-    // Arrange
-    var controller = new PositionsController();
+    [Fact]
+    public void Getposdistance_DatabaseFailure_Returns500()
+    {
+        // Arrange
+        var controller = CreateController();
 
-    Environment.SetEnvironmentVariable("DOTNET_SYSTEM_NET_HTTP_USESOCKETSHTTPHANDLER", "0");
+        // Act
+        var result = controller.Getposdistance("Athens");
 
-    // Act
-    var result = controller.Getposdistance("Athens");
-
-    // Assert
-    var objectResult = Assert.IsType<ObjectResult>(result.Result);
-    Assert.Equal(500, objectResult.StatusCode);
-    Assert.Equal("Internal server error", objectResult.Value);
-}
+        // Assert
+        var objectResult = Assert.IsType<ObjectResult>(result.Result);
+        Assert.Equal(500, objectResult.StatusCode);
+        Assert.Equal("Internal server error", objectResult.Value);
+    }
 }

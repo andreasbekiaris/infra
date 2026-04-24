@@ -9,7 +9,6 @@ C:\Users\Andre\Dropbox\infra\InfraApi.Tests\bin\Debug\net8.0\InfraApi.deps.json
 C:\Users\Andre\Dropbox\infra\InfraApi.Tests\bin\Debug\net8.0\InfraApi.runtimeconfig.json
 C:\Users\Andre\Dropbox\infra\InfraApi.Tests\bin\Debug\net8.0\appsettings.Development.json
 C:\Users\Andre\Dropbox\infra\InfraApi.Tests\bin\Debug\net8.0\appsettings.json
-C:\Users\Andre\Dropbox\infra\InfraApi.Tests\bin\Debug\net8.0\controllers\appsettings.json
 C:\Users\Andre\Dropbox\infra\InfraApi.Tests\bin\Debug\net8.0\InfraApi.exe
 C:\Users\Andre\Dropbox\infra\InfraApi.Tests\bin\Debug\net8.0\testhost.exe
 C:\Users\Andre\Dropbox\infra\InfraApi.Tests\bin\Debug\net8.0\xunit.runner.visualstudio.dotnetcore.testadapter.dll
@@ -155,3 +154,4 @@ C:\Users\Andre\Dropbox\infra\InfraApi.Tests\obj\Debug\net8.0\refint\InfraApi.Tes
 C:\Users\Andre\Dropbox\infra\InfraApi.Tests\obj\Debug\net8.0\InfraApi.Tests.pdb
 C:\Users\Andre\Dropbox\infra\InfraApi.Tests\obj\Debug\net8.0\InfraApi.Tests.genruntimeconfig.cache
 C:\Users\Andre\Dropbox\infra\InfraApi.Tests\obj\Debug\net8.0\ref\InfraApi.Tests.dll
+C:\Users\Andre\dropbox\infra\InfraApi.Tests\obj\Debug\net8.0\InfraApi.Tests.sourcelink.json

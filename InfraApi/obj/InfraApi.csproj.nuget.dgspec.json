@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Andre\\Dropbox\\infra\\InfraApi\\InfraApi.csproj": {}
+    "C:\\Users\\Andre\\dropbox\\infra\\InfraApi\\InfraApi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Andre\\Dropbox\\infra\\InfraApi\\InfraApi.csproj": {
+    "C:\\Users\\Andre\\dropbox\\infra\\InfraApi\\InfraApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Andre\\Dropbox\\infra\\InfraApi\\InfraApi.csproj",
+        "projectUniqueName": "C:\\Users\\Andre\\dropbox\\infra\\InfraApi\\InfraApi.csproj",
         "projectName": "InfraApi",
-        "projectPath": "C:\\Users\\Andre\\Dropbox\\infra\\InfraApi\\InfraApi.csproj",
+        "projectPath": "C:\\Users\\Andre\\dropbox\\infra\\InfraApi\\InfraApi.csproj",
         "packagesPath": "C:\\Users\\Andre\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Andre\\Dropbox\\infra\\InfraApi\\obj\\",
+        "outputPath": "C:\\Users\\Andre\\dropbox\\infra\\InfraApi\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Andre\\AppData\\Roaming\\NuGet\\NuGet.Config"

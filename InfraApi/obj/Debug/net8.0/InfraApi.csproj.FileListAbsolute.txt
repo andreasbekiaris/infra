@@ -31,7 +31,6 @@ C:\Users\Andre\Dropbox\infra\InfraApi\obj\Debug\net8.0\refint\InfraApi.dll
 C:\Users\Andre\Dropbox\infra\InfraApi\obj\Debug\net8.0\InfraApi.pdb
 C:\Users\Andre\Dropbox\infra\InfraApi\obj\Debug\net8.0\InfraApi.genruntimeconfig.cache
 C:\Users\Andre\Dropbox\infra\InfraApi\obj\Debug\net8.0\ref\InfraApi.dll
-C:\Users\Andre\Dropbox\infra\InfraApi\bin\Debug\net8.0\controllers\appsettings.json
 C:\Users\Andre\Dropbox\infra\InfraApi\bin\Debug\net8.0\Azure.Core.dll
 C:\Users\Andre\Dropbox\infra\InfraApi\bin\Debug\net8.0\Azure.Identity.dll
 C:\Users\Andre\Dropbox\infra\InfraApi\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
@@ -76,3 +75,4 @@ C:\Users\Andre\Dropbox\infra\InfraApi\bin\Debug\net8.0\runtimes\win-x64\native\M
 C:\Users\Andre\Dropbox\infra\InfraApi\bin\Debug\net8.0\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
 C:\Users\Andre\Dropbox\infra\InfraApi\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.dll
 C:\Users\Andre\Dropbox\infra\InfraApi\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
+C:\Users\Andre\dropbox\infra\InfraApi\obj\Debug\net8.0\InfraApi.sourcelink.json
