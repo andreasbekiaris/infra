@@ -28,7 +28,7 @@ public class PositionsController : ControllerBase
     // GET /api/positions
     // Returns all positions stored in the database
     [HttpGet]
-    public IActionResult GetPositions()
+    public async Task< IActionResult> GetPositionsAsync()
     {
         try
         {
@@ -37,18 +37,16 @@ public class PositionsController : ControllerBase
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             {
-                con.Open();
+                await con.OpenAsync();
 
                 // Query that selects all positions
                 SqlCommand cmd = new SqlCommand(
-                    "SELECT pos_name, pos_lat, pos_lon FROM positions ORDER BY pos_name ASC",
-                    con
-                );
+                    "SELECT pos_name, pos_lat, pos_lon FROM positions ORDER BY pos_name ASC", con );
 
-                SqlDataReader reader = cmd.ExecuteReader();
+                SqlDataReader reader = await cmd.ExecuteReaderAsync();
 
                 // Read each row from the database
-                while (reader.Read())
+                while (await reader.ReadAsync())
                 {
                     // Create a Position object from the row
                     Position p = new Position
@@ -79,7 +77,7 @@ public class PositionsController : ControllerBase
     // POST /api/positions
     // Adds a new position to the database
     [HttpPost]
-    public IActionResult PostPositions(Position b)
+    public async Task<IActionResult> PostPositions(Position b)
     {
         try
         {
@@ -103,35 +101,35 @@ public class PositionsController : ControllerBase
 
             using (SqlConnection con = new SqlConnection(_connectionString))
             {
-                con.Open();
+                await con.OpenAsync();
 
                 // First check if the name already exists
-                string query = "SELECT COUNT(*) FROM positions WHERE pos_name = @Name";
-                SqlCommand cmd = new SqlCommand(query, con);
-                cmd.Parameters.AddWithValue("@Name", b.Name);
+             string query = @"INSERT INTO positions (pos_name, pos_lat, pos_lon) SELECT @Name, @Lat, @Lon WHERE NOT EXISTS (SELECT 1 FROM positions WHERE pos_name = @Name)";
 
-                int count = (int)cmd.ExecuteScalar();
+             SqlCommand cmd = new SqlCommand(query, con);                            
+              cmd.Parameters.AddWithValue("@Name", b.Name);
+                cmd.Parameters.AddWithValue("@Lat", b.Lat);
+                cmd.Parameters.AddWithValue("@Lon", b.Lon);
 
-                if (count > 0)
+              int rowsAffected = await cmd.ExecuteNonQueryAsync();
+
+                if (rowsAffected == 0  )
+
                 {
                     // Name already exists
                     return Conflict("Position name already exists.");
-                }
-
-                // Insert the new position
-                string query1 = "INSERT INTO positions (pos_name, pos_lat, pos_lon) VALUES (@Name, @Lat, @Lon)";
-                SqlCommand cmd1 = new SqlCommand(query1, con);
-                cmd1.Parameters.AddWithValue("@Name", b.Name);
-                cmd1.Parameters.AddWithValue("@Lat", b.Lat);
-                cmd1.Parameters.AddWithValue("@Lon", b.Lon);
-
-                cmd1.ExecuteNonQuery();
+                }        
             }
 
             _logger.LogInformation("Inserted position {Name}.", b.Name);
 
             return Ok();
         }
+          catch (SqlException ex) when (ex.Number == 2627) // unique constraint
+    {
+        _logger.LogWarning("Duplicate position name attempted: {Name}", b.Name);
+        return Conflict("Position name already exists.");
+    }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error while inserting position.");
@@ -142,96 +140,80 @@ public class PositionsController : ControllerBase
 
     // GET /api/positions/{name}/distance
     // Calculates distance from this position to all the others
-    [HttpGet("{name}/distance")]
-    public ActionResult<List<Distance>> Getposdistance(string name)
+   [HttpGet("{name}/distance")]
+public async Task<ActionResult<List<Distance>>> Getposdistance(string name)
+{
+    try
     {
-        try
+        if (string.IsNullOrWhiteSpace(name))
+            return BadRequest("Invalid name");
+
+        var distances = new List<Distance>();
+
+        using (SqlConnection con = new SqlConnection(_connectionString))
         {
-            if (string.IsNullOrWhiteSpace(name))
+            await con.OpenAsync();
+
+            // 1️⃣ Check if the name exists
+            string existsQuery = "SELECT COUNT(1) FROM positions WHERE pos_name = @Name";
+            SqlCommand existsCmd = new SqlCommand(existsQuery, con);
+            existsCmd.Parameters.AddWithValue("@Name", name);
+
+            int count = (int)(await existsCmd.ExecuteScalarAsync() ?? 0);
+
+            if (count == 0)
+                return NotFound();
+
+            // 2️⃣ One query to get everything
+string query = @"
+    SELECT 
+        other.pos_name,
+        other.pos_lat,
+        other.pos_lon,
+        target.pos_lat AS target_lat,
+        target.pos_lon AS target_lon
+    FROM positions other
+    CROSS JOIN positions target
+    WHERE target.pos_name = @Name
+      AND other.pos_name != @Name
+    ORDER BY other.pos_name ASC";
+
+            SqlCommand cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@Name", name);
+
+            // 3️⃣ One reader with column names
+            using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
             {
-                return BadRequest("Invalid name");
-            }
-
-            double targetLat;
-            double targetLon;
-
-            List<Position> positions = new List<Position>();
-            List<Distance> distances = new List<Distance>();
-
-            using (SqlConnection con = new SqlConnection(_connectionString))
-            {
-                con.Open();
-
-                // First we get the coordinates of the requested position
-                string query = "SELECT pos_name, pos_lat, pos_lon FROM positions WHERE pos_name = @Name";
-                SqlCommand cmd1 = new SqlCommand(query, con);
-                cmd1.Parameters.AddWithValue("@Name", name);
-
-                SqlDataReader reader1 = cmd1.ExecuteReader();
-
-                if (reader1.Read())
+                while (await reader.ReadAsync())
                 {
-                    targetLat = reader1.GetDouble(1);
-                    targetLon = reader1.GetDouble(2);
-                }
-                else
-                {
-                    // Position not found
-                    return NotFound();
-                }
-
-                reader1.Close();
-
-                // Now get all positions
-                SqlCommand cmd = new SqlCommand(
-                    "SELECT pos_name, pos_lat, pos_lon FROM positions ORDER BY pos_name ASC",
-                    con
-                );
-
-                SqlDataReader reader = cmd.ExecuteReader();
-
-                while (reader.Read())
-                {
-                    Position p = new Position
-                    {
-                        Name = reader.GetString(0),
-                        Lat = reader.GetDouble(1),
-                        Lon = reader.GetDouble(2)
-                    };
-
-                    positions.Add(p);
-                }
-
-                // Calculate distance for each position
-                foreach (var p in positions)
-                {
-                    if (p.Name == name)
-                        continue;
-
                     double km = DistanceCalculator.CalculateDistance(
-                        targetLat,
-                        targetLon,
-                        p.Lat,
-                        p.Lon
+                        reader.GetDouble(reader.GetOrdinal("target_lat")),
+                        reader.GetDouble(reader.GetOrdinal("target_lon")),
+                        reader.GetDouble(reader.GetOrdinal("pos_lat")),
+                        reader.GetDouble(reader.GetOrdinal("pos_lon"))
                     );
 
                     distances.Add(new Distance
                     {
-                        Name = p.Name,
+                        Name = reader.GetString(reader.GetOrdinal("pos_name")),
                         Distance_km = km
                     });
                 }
             }
-
-            _logger.LogInformation("Calculated distances from {Name}.", name);
-
-            return Ok(distances);
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error while calculating distances.");
 
-            return StatusCode(500, "Internal server error");
-        }
+        _logger.LogInformation("Calculated distances from {Name}.", name);
+        return Ok(distances);
     }
+    catch (SqlException ex)
+    {
+        _logger.LogError(ex, "Database error while calculating distances from {Name}.", name);
+        return StatusCode(500, "Database error");
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "Unexpected error while calculating distances from {Name}.", name);
+        return StatusCode(500, "Internal server error");
+    }
+}
 }

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "99i2gSSHFcM=",
+  "dgSpecHash": "Fx1rzZAWKaM=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Andre\\dropbox\\infra\\InfraApi\\InfraApi.csproj",
+  "projectFilePath": "C:\\Users\\Andre\\Dropbox\\infra\\InfraApi\\InfraApi.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Andre\\.nuget\\packages\\azure.core\\1.50.0\\azure.core.1.50.0.nupkg.sha512",
     "C:\\Users\\Andre\\.nuget\\packages\\azure.identity\\1.17.1\\azure.identity.1.17.1.nupkg.sha512",
