@@ -3,6 +3,7 @@ using Xunit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 public class ErrorHandlingTests
 {
@@ -24,13 +25,13 @@ public class ErrorHandlingTests
     }
 
     [Fact]
-    public void GetPositions_DatabaseFailure_Returns500()
+    public async Task GetPositions_DatabaseFailure_Returns500()
     {
         // Arrange
-        var controller = CreateBrokenController();
+      var controller = CreateBrokenController();
 
         // Act
-        IActionResult result = controller.GetPositions();
+        IActionResult result = await controller.GetPositions();
 
         // Assert
         var objectResult = Assert.IsType<ObjectResult>(result);
@@ -39,7 +40,7 @@ public class ErrorHandlingTests
     }
 
     [Fact]
-    public void PostPositions_DatabaseFailure_Returns500()
+    public async Task  PostPositions_DatabaseFailure_Returns500()
     {
         // Arrange
         var controller = CreateBrokenController();
@@ -52,7 +53,7 @@ public class ErrorHandlingTests
         };
 
         // Act
-        IActionResult result = controller.PostPositions(position);
+        IActionResult result = await controller.PostPositions(position);
 
         // Assert
         var objectResult = Assert.IsType<ObjectResult>(result);
@@ -61,17 +62,17 @@ public class ErrorHandlingTests
     }
 
     [Fact]
-    public void Getposdistance_DatabaseFailure_Returns500()
+    public async Task  Getposdistance_DatabaseFailure_Returns500()
     {
         // Arrange
         var controller = CreateBrokenController();
 
         // Act
-        var result = controller.Getposdistance("Athens");
+        var result = await controller.Getposdistance("Athens");
 
         // Assert
         var objectResult = Assert.IsType<ObjectResult>(result.Result);
         Assert.Equal(500, objectResult.StatusCode);
-        Assert.Equal("Internal server error", objectResult.Value);
+        Assert.Equal("Database error", objectResult.Value);
     }
 }

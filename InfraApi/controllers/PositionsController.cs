@@ -29,7 +29,7 @@ public class PositionsController : ControllerBase
     // GET /api/positions
     // Returns all positions stored in the database
     [HttpGet]
-    public async Task< IActionResult> GetPositionsAsync()
+    public async Task< IActionResult> GetPositions()
     {
         try
         {

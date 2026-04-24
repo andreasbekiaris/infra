@@ -30,7 +30,7 @@ public class PositionsControllerTests
     }
 
     [Fact]
-    public void PostPositions_EmptyName_ReturnsBadRequest()
+    public async Task PostPositions_EmptyName_ReturnsBadRequest()
     {
         // Arrange
         // Create the controller and a position with an empty name
@@ -45,7 +45,7 @@ public class PositionsControllerTests
 
         // Act
         // Call the method we want to test
-        IActionResult result = controller.PostPositions(position);
+        IActionResult result = await controller.PostPositions(position);
 
         // Assert
         // We expect a BadRequest response
@@ -54,11 +54,11 @@ public class PositionsControllerTests
     }
 
     [Fact]
-    public void PostPositions_NullName_ReturnsBadRequest()
+    public async Task PostPositions_NullName_ReturnsBadRequest()
     {
         // Arrange
         // Create controller and position with null name
-        var controller = CreateController();
+        var controller =  CreateController();
 
         var position = new Position
         {
@@ -68,7 +68,7 @@ public class PositionsControllerTests
         };
 
         // Act
-        IActionResult result = controller.PostPositions(position);
+        IActionResult result = await controller.PostPositions(position);
 
         // Assert
         // Should return BadRequest because name is null
@@ -77,7 +77,7 @@ public class PositionsControllerTests
     }
 
     [Fact]
-    public void PostPositions_WhitespaceName_ReturnsBadRequest()
+    public async Task PostPositions_WhitespaceName_ReturnsBadRequest()
     {
         // Arrange
         // Create controller and position with only spaces as name
@@ -91,7 +91,7 @@ public class PositionsControllerTests
         };
 
         // Act
-        IActionResult result = controller.PostPositions(position);
+        IActionResult result = await controller.PostPositions(position);
 
         // Assert
         // Should return BadRequest because whitespace is not a valid name
