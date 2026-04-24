@@ -12,9 +12,9 @@ namespace InfraApi.Tests;
 
 public class GeoHelperTests
 {
-    // -----------------------------------------------------------------------
+    
     // 1. Same point → zero distance
-    // -----------------------------------------------------------------------
+    
     [Fact]
     public void Distance_SamePoint_ReturnsZero()
     {
@@ -51,11 +51,11 @@ public class GeoHelperTests
         Assert.InRange(result, 19_995, 20_035);
     }
 
-    // -----------------------------------------------------------------------
+    
     // 4. Crossing the International Date Line: lon +179 → lon -179
     //    These two points are only ~222 km apart near the equator,
     //    NOT ~19,000 km — a naive implementation will get this wrong.
-    // -----------------------------------------------------------------------
+    
     [Fact]
     public void Distance_CrossingDateLine_ReturnsShortDistance()
     {
@@ -66,9 +66,8 @@ public class GeoHelperTests
         Assert.InRange(result, 217, 227);
     }
 
-    // -----------------------------------------------------------------------
     // 5a. North Pole to South Pole ≈ 20,015 km (same as antipodal)
-    // -----------------------------------------------------------------------
+    
     [Fact]
     public void Distance_NorthPoleToSouthPole_ReturnsHalfCircumference()
     {
@@ -77,11 +76,11 @@ public class GeoHelperTests
         Assert.InRange(result, 19_995, 20_035);
     }
 
-    // -----------------------------------------------------------------------
+    
     // 5b. Any point to the North Pole — longitude is irrelevant at the poles
     //     Athens (37.98, 23.72) → North Pole (90, 0) ≈ 5,793 km
     //     Changing the pole's longitude must NOT change the result.
-    // -----------------------------------------------------------------------
+    
     [Fact]
     public void Distance_ToNorthPole_LongitudeOfPoleIsIrrelevant()
     {
@@ -97,10 +96,10 @@ public class GeoHelperTests
         Assert.InRange(resultLon0, 5_780, 5_810);
     }
 
-    // -----------------------------------------------------------------------
+    
     // 6. Symmetry: dist(A → B) must equal dist(B → A)
     //    Tested with three different pairs to be thorough.
-    // -----------------------------------------------------------------------
+   
     [Theory]
     [InlineData(37.98,  23.72, 51.50,  -0.12)]   // Athens  → London
     [InlineData(40.71, -74.00, 35.68, 139.69)]   // New York → Tokyo

@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\InfraApi.props" />
+</Project>
